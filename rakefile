@@ -1,0 +1,165 @@
+root_path = File.expand_path(File.dirname(__FILE__))
+require 'bundler'
+Bundler.require :rake
+require 'rake/testtask'
+require 'rake/rdoctask'
+require 'rake/clean'
+
+include ExecuteShell
+
+task :default => [:tests]
+
+# Include any ruby files in the tasks folder.
+task_files = Dir[
+  File.join(File.expand_path(File.dirname(__FILE__)), 'tasks', '*.rb')]
+
+task_files.each do |rake_file|
+  require rake_file
+end
+
+# Add a task to run all tests.
+Rake::TestTask.new('tests') do |task|
+  task.pattern = 'test/*_test.rb'
+  task.verbose = true
+  task.warning = true
+end
+Rake::Task[:tests].comment = 'Run all tests'
+
+################################################################################
+namespace :test do
+################################################################################
+  file_list = Dir['test/*_test.rb']
+
+  # Add a distinct test task for each test file.
+  file_list.each do |item|
+    # Get the name to use for the task by removing '_test.rb' from the name.
+    task_name = File.basename(item, '.rb').gsub(/_test$/, '')
+
+    # Add each test.
+    Rake::TestTask.new(task_name) do |task|
+      task.pattern = item
+      task.verbose = true
+      task.warning = true
+    end
+  end
+################################################################################
+end # :test
+################################################################################
+
+################################################################################
+namespace :rdoc do
+################################################################################
+
+  # Set the paths used by each of the rdoc options.
+  RDOC_FILES = {
+    :all     => ['**/*.rb'],
+    :test    => ['test/lib/**/*.rb'],
+    :app     => [
+      '*.rb',
+      'lib/**/*.rb',
+    ],
+  }
+
+  # Loop through the typs of rdoc files to generate an rdoc task for each one.
+  RDOC_FILES.keys.each do |rdoc_task|
+    Rake::RDocTask.new(
+        :rdoc         => rdoc_task,
+        :clobber_rdoc => "#{rdoc_task}:clobber",
+        :rerdoc       => "#{rdoc_task}:force") do |rdtask|
+      rdtask.rdoc_dir = "help/#{rdoc_task}"
+      rdtask.options << '--charset' << 'utf8'
+      rdtask.rdoc_files.include(RDOC_FILES[rdoc_task])
+    end
+
+    Rake::Task[rdoc_task].comment =
+      "Generate #{rdoc_task} RDoc documentation."
+  end
+################################################################################
+end # :rdoc
+################################################################################
+
+desc 'Generate examples.'
+task :examples do |task|
+  require_relative 'lib/mode'
+
+  commands = [
+    [
+      'Mode.new',
+      'Mode.new(:test)',
+      'Mode.new(:dev, [:abc, :dev])',
+    ], [
+    'o=Mode.new;o.state',
+    ]
+  ]
+
+  output = []
+
+  commands.each do |sub_commands|
+    max = 0
+
+    sub_commands.each do |command|
+      output << generate_output(command)
+      max = [output.last.index(/%s/), max].max
+    end
+
+    output.map! do |item|
+      item % [' ' * (max - (item.index(/%s/) || 0) + 1)]
+    end
+  end
+
+  puts output
+end
+
+def generate_output(command)
+  format = '%s%s#=> %s'
+
+  result = eval(command)
+
+  if result.inspect =~ /^#</
+    result = result.inspect
+    result.gsub!(/^#|:\wx\w{14}/, '')
+  end
+
+  return format % [command, '%s', result]
+end
+
+desc 'Search for a string in all files using a case insensitive search.'
+task :grep, [:text] do |task, args|
+  # Set default search text to t-o-d-o.
+  # It is done this way to prevent coming up in the search itself.
+  args.with_defaults(:text => 't' + 'o' + 'd' + 'o')
+
+  # Use the sample color scheme, since it provides us with bold red via :error.
+  HighLine.color_scheme = HighLine::SampleColorScheme.new
+  COLOR = "<%%= color('%s', :error) %%>"
+
+  notification = "\nSearching for '%s':\n\n"
+
+  # Output the text that is being searched for.
+  case Platform::IMPL
+    when :linux
+      notification = notification % [COLOR % args[:text]]
+    when :mingw
+      notification = notification % args[:text]
+    else
+      raise_not_implemented('grep')
+  end
+
+  say notification
+
+  command = "grep #{args[:text]} * -ri"
+  success, output = shell(command)
+
+  # Send the results to the console.
+  case Platform::IMPL
+    when :linux
+      output = output.gsub(/(#{args[:text]})/i, COLOR % '\1')
+    when :mingw
+    else
+      raise_not_implemented('grep')
+  end
+
+  say output
+end
+
+CLOBBER.include('help')
