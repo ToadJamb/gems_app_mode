@@ -45,6 +45,18 @@ class ModeTest < Test::Unit::TestCase
     assert_equal states(:default), @obj.valid_states
   end
 
+  def test_setting_state
+    create :test
+
+    assert_equal :test, @obj.state
+    assert_true @obj.test
+
+    assert_nothing_raised { @obj.state = :development }
+
+    assert_equal :development, @obj.state
+    assert_true @obj.development
+  end
+
   def test_new_object
     create :test
     assert_equal :test, @obj.state
