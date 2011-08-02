@@ -1,4 +1,4 @@
-gem_spec = Gem::Specification.new do |s|
+Gem::Specification.new do |s|
   s.name = 'mode'
   s.version = '0.0.1'
 
