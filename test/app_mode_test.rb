@@ -30,19 +30,33 @@
 ################################################################################
 #++
 
-require File.join(File.dirname(File.expand_path(__FILE__)), 'require')
+require_relative 'require'
 
-class ModeTest < Test::Unit::TestCase
-  include ModeSupport
+class AppModeTest < Test::Unit::TestCase
+  include AppModeSupport
+
+  def setup
+    @class.setup
+    super
+  end
 
   def test_class_type
-    assert_equal Mode, @class
+    assert_equal AppMode, @class
   end
+
+  ############################################################################
+  # Instance tests.
+  ############################################################################
 
   def test_default_settings
     create
+
     assert_equal :production, @obj.state
     assert_equal states(:default), @obj.valid_states
+
+    assert_true @obj.production
+    assert_false @obj.development
+    assert_false @obj.test
   end
 
   def test_setting_state
@@ -109,6 +123,65 @@ class ModeTest < Test::Unit::TestCase
     assert_true @obj.send(:development)
     assert_false @obj.send(:production)
     assert_raise(ArgumentError) { @obj.send(:test) }
+  end
+
+  ############################################################################
+  # Class tests.
+  ############################################################################
+
+  def test_class_default_settings
+    assert_equal :production, @class.state
+    assert_equal states(:default), @class.valid_states
+
+    assert_true @class.production
+    assert_false @class.development
+    assert_false @class.test
+  end
+
+  def test_class_setting_state
+    assert_nothing_raised { @class.state = :test }
+
+    assert_equal :test, @class.state
+    assert_true @class.test
+
+    assert_nothing_raised { @class.state = :development }
+
+    assert_equal :development, @class.state
+    assert_true @class.development
+  end
+
+  def test_class_invalid_state
+    assert_raise(RuntimeError) { @class.setup :invalid }
+    assert_raise(NoMethodError) { if @class.invalid; end }
+  end
+
+  def test_class_respond_to
+    @class.state = :test
+
+    method_list.each_value do |method|
+      assert_respond_to @class, method
+    end
+
+    states(:default).each do |method|
+      assert_respond_to @class, method
+    end
+
+    assert_not_respond_to @class, :invalid
+  end
+
+  # This test exists because of Kernel::test.
+  def test_class_send_method
+    @class.state = :test
+    assert_equal :test, @class.send(:state)
+    assert_true @class.send(:test)
+    assert_false @class.send(:production)
+    assert_false @class.send(:development)
+
+    @class.setup :development, [:development, :production]
+    assert_equal :development, @class.send(:state)
+    assert_true @class.send(:development)
+    assert_false @class.send(:production)
+    assert_raise(ArgumentError) { @class.send(:test) }
   end
 
   ############################################################################

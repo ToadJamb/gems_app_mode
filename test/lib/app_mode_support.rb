@@ -1,5 +1,5 @@
-# This file contains a class to manage information about the mode that the
-# executing code is running in.
+# This file contains a module which bridges the gap between test code
+# and applciation code.
 
 #--
 ################################################################################
@@ -33,79 +33,83 @@
 ################################################################################
 #++
 
-# This class manages the mode that the executing code is running in.
-class Mode
-  attr_reader :state, :valid_states
+# This module is provided to be used as an include in any necessary class.
+#
+# This serves as a bridge between test code and application code.
+module AppModeSupport
+  # These are things that will be used throughout testing in multiple locations.
+  ITEMS = {
+    :states => {
+      :default => [:development, :test, :production],
+    }, # :states
 
-  # Constructor.
-  # ==== Input
-  # [env : Symbol] The environment that the mode should be set to.
-  # [valid_states : Array : (:development, :test, :production)] Valid states.
-  # ==== Notes
-  # <tt>env</tt> must be a member of <tt>states</tt>.
-  # ==== Examples
-  #  Mode.new                     #=> <Mode @state=:production, @valid_states=[:development, :test, :production]>
-  #  Mode.new(:test)              #=> <Mode @state=:test, @valid_states=[:development, :test, :production]>
-  #  Mode.new(:dev, [:abc, :dev]) #=> <Mode @state=:dev, @valid_states=[:abc, :dev]>
-  def initialize(
-      state        = :production,
-      valid_states = [:development, :test, :production])
-    @state = state
-    @valid_states = valid_states
-    set_state @state
-  end
+    :method_list => {
+      :valid_states => :valid_states,
+      :state        => :state,
+    }, # :methods
+  } # ITEMS
 
-  # Sets the environment instance variable.
-  # ==== Input
-  # [value : Symbol] The value that will be used for the environment.
-  def state=(value)
-    set_state value
-  end
-
-  # Override the send method.
+  # Black magic.
   #
-  # This was implemented to cover the case where test is used as a state.
-  # In that case, the default behavior was to call the private
-  # test method from Kernel. This prevents that behavior in cases where a
-  # public method is available via method_missing in this class.
-  def send(method, *args)
-    return method_missing(method, *args) if respond_to_missing?(method, false)
-    super
-  end
-
-  ############################################################################
-  private
-  ############################################################################
-
-  # Allows the getting of the mode.
+  # This is used for the following purposes:
+  # * To return elements from the ITEMS hash.
+  # * To return messages (from the ITEMS hash),
+  #   possibly with string substitutions.
   # ==== Input
   # [method : Symbol] The method that was called.
   # [*args : Array] Any arguments that were passed in.
   # [&block : Block] A block, if specified.
-  def method_missing(method, *args, &block)
-    return method == @state if respond_to_missing?(method, false)
-    super
-  end
-
-  # Ensure that the object knows what it can respond to via method_missing.
-  # ==== Input
-  # [method : Symbol] The method to check for a response to.
-  # [include_private : Boolean] Whether to include private methods.
   # ==== Output
-  # [Boolean] Indicates whether the object will respond to the specified method.
-  def respond_to_missing?(method, include_private)
-    return true if @valid_states.include?(method)
-    super
+  # [Any] It depends on the method.
+  def method_missing(method, *args, &block)
+    # Check if the method is a key in the ITEMS hash.
+    if ITEMS.has_key? method
+      # Initialize the variable that will hold the return value.
+      value = nil
+
+      if args.nil? or args.count == 0
+        # If no arguments have been specified, return the element as is.
+        value = ITEMS[method]
+      elsif ITEMS[method][args[0]].is_a?(String) &&
+          ITEMS[method][args[0]].index('%s')
+        # The first parameter is the message.
+        msg = args.shift
+
+        if args.count == 0
+          # If no arguments are left, return the message.
+          value = ITEMS[method][msg]
+        else
+          # Use any remaining arguments to make substitutions.
+          value = ITEMS[method][msg] % args
+        end
+      else # All other methods - which are expected to have one parameter.
+        # Get the element to return.
+        item = args[0].to_sym
+
+        # Return the indicated element.
+        value = ITEMS[method][item]
+      end
+
+      # Strip all trailing line feeds from strings.
+      value.gsub!(/\n*\z/, '') if value.is_a?(String)
+
+      return value
+    else
+      super
+    end
   end
 
-  # Sets the state.
+  # Indicates which methods the class will respond to.
   # ==== Input
-  # [value : Symbol] The value to use for the state.
-  def set_state(value)
-    unless @valid_states.include?(value)
-      raise "Invalid environment setting: '#{value}'."
+  # [method : Symbol] The method to check for.
+  # [include_private : Boolean] Whether private methods should be checked.
+  # ==== Output
+  # [Boolean] Whether the object will respond to the specified method.
+  def respond_to_missing?(method, include_private = false)
+    if ITEMS.has_key? method
+      return true
+    else
+      super
     end
-
-    @state = value
   end
 end

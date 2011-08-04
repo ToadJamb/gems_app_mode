@@ -1,20 +1,10 @@
 GEM
   remote: http://rubygems.org/
   specs:
-    Platform (0.4.0)
-    execute_shell (0.0.1)
-      Platform (~> 0.4.0)
-      open4 (~> 1.0.1)
-      win32-open3-19 (~> 0.0.1)
-    highline (1.6.1)
-    open4 (1.0.1)
     rake (0.8.7)
-    win32-open3-19 (0.0.1)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  execute_shell (~> 0.0.1)
-  highline (~> 1.6.1)
   rake (~> 0.8.7)

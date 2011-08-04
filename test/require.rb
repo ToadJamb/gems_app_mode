@@ -5,7 +5,7 @@ Bundler.require :test
 
 require 'test/unit'
 
-require_relative '../lib/mode'
+require File.join(root_path, 'lib', 'app_mode')
 
 file_list = Dir[File.join(root_path, 'test', 'lib', '*.rb')]
 file_list.each do |file|
