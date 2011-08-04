@@ -23,6 +23,14 @@ namespace :test do
       task.warning = true
     end
   end
+
+  file_name = File.basename(File.expand_path(File.join(__FILE__, '..', '..')))
+  file_name += '_test.rb'
+
+  desc "Run a single method in #{file_name}."
+  task :method, [:method_name] do |t, args|
+    puts `ruby ./test/#{file_name} --name #{args[:method_name]}`
+  end
 ################################################################################
 end # :test
 ################################################################################
