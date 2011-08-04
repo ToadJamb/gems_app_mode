@@ -40,7 +40,11 @@ module AppModeSupport
   # These are things that will be used throughout testing in multiple locations.
   ITEMS = {
     :states => {
-      :default => [:development, :test, :production],
+      :default => [:development, :test, :rake, :production],
+      :dev     => [:dev_dev, :dev_test, :dev_rake, :dev_prod],
+      :test    => [:test_dev, :test_test, :test_rake, :test_prod],
+      :rake    => [:rake_dev, :rake_test, :rake_rake, :rake_prod],
+      :prod    => [:prod_dev, :prod_test, :prod_rake, :prod_prod],
     }, # :states
 
     :method_list => {
@@ -48,6 +52,19 @@ module AppModeSupport
       :state        => :state,
     }, # :methods
   } # ITEMS
+
+  ITEMS.each_key do |key|
+    new_method = <<-DOC
+      def #{key}(*args)
+        method_missing(:#{key}, *args)
+      end
+      module_function :#{key}
+    DOC
+
+    module_eval <<-EOT, __FILE__, __LINE__ + 1
+      eval new_method
+    EOT
+  end
 
   # Black magic.
   #
@@ -98,6 +115,7 @@ module AppModeSupport
       super
     end
   end
+  module_function :method_missing
 
   # Indicates which methods the class will respond to.
   # ==== Input

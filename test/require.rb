@@ -1,13 +1,9 @@
-root_path = File.join(File.dirname(File.expand_path(__FILE__)), '..')
-root_path = File.expand_path(root_path)
-
 Bundler.require :test
 
 require 'test/unit'
 
-require File.join(root_path, 'lib', 'app_mode')
+require_relative '../lib/app_mode/app_mode'
 
-file_list = Dir[File.join(root_path, 'test', 'lib', '*.rb')]
-file_list.each do |file|
-  require file
-end
+require_relative 'lib/app_mode_support'
+require_relative 'lib/app_mode'
+require_relative 'lib/test_case'

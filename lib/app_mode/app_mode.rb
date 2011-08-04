@@ -90,8 +90,8 @@ class AppMode
   #  Mode.new(:test)              #=> <Mode @state=:test, @valid_states=[:development, :test, :production]>
   #  Mode.new(:dev, [:abc, :dev]) #=> <Mode @state=:dev, @valid_states=[:abc, :dev]>
   def initialize(
-      state        = :production,
-      valid_states = [:development, :test, :production])
+      state        = :dynamic,
+      valid_states = [:development, :test, :rake, :production])
     @state = state
     @valid_states = valid_states
     set_state @state
@@ -119,6 +119,33 @@ class AppMode
   private
   ############################################################################
 
+  # Returns the appropriate state to use when setting the state dynamically.
+  # ==== Output
+  # [Symbol] The state that should be used when setting the state dynamically.
+  def dynamic_state
+    call = origin
+    return @valid_states[0] unless call.sub(/^\.\//, '').match(/\//)
+    return @valid_states[1] if call.match(/rake_test_loader\.rb/)
+    return @valid_states[2] if call.match(%r[/bin/rake])
+    return @valid_states.last
+  end
+
+  # Returns the current working directory.
+  # ==== Notes
+  # This method is overridden during tests.
+  def getwd
+    Dir.getwd
+  end
+
+  # Returns the first call in the stack.
+  # ==== Output
+  # [String] The file that made the first call in the stack.
+  # ==== Notes
+  # This method is overridden during tests.
+  def origin
+    caller.last
+  end
+
   # Allows the getting of the mode.
   # ==== Input
   # [method : Symbol] The method that was called.
@@ -144,10 +171,14 @@ class AppMode
   # ==== Input
   # [value : Symbol] The value to use for the state.
   def set_state(value)
-    unless @valid_states.include?(value)
+    unless @valid_states.include?(value) || value == :dynamic
       raise "Invalid environment setting: '#{value}'."
     end
 
-    @state = value
+    if value == :dynamic
+      @state = dynamic_state || @valid_states.last
+    else
+      @state = value
+    end
   end
 end
