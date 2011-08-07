@@ -2,8 +2,7 @@ Gem::Specification.new do |s|
   s.name = 'app_mode'
   s.version = '0.0.1'
 
-  s.summary = 'AppMode provides state management for ' +
-    'modules, classes, libraries, and applications.'
+  s.summary = 'Application state management.'
   s.description = 'AppMode provides state management for ' +
     'modules, classes, libraries, and applications.'
 
