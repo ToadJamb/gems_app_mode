@@ -13,7 +13,7 @@ namespace :rdoc do
   }
 
   # Base path for the output.
-  base_path = 'help'
+  base_path = 'doc'
 
   # Loop through the typs of rdoc files to generate an rdoc task for each one.
   rdoc_files.keys.each do |rdoc_task|
@@ -23,7 +23,8 @@ namespace :rdoc do
         :rerdoc       => "#{rdoc_task}:force") do |rdtask|
       rdtask.rdoc_dir = File.join(base_path, rdoc_task.to_s)
       rdtask.options << '--charset' << 'utf8'
-      rdtask.rdoc_files.include(rdoc_files[rdoc_task])
+      rdtask.rdoc_files.include(rdoc_files[rdoc_task], 'README')
+      rdtask.main = 'README'
     end
 
     Rake::Task[rdoc_task].comment =
