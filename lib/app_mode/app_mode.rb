@@ -86,9 +86,9 @@ class AppMode
   # ==== Notes
   # <tt>env</tt> must be a member of <tt>states</tt>.
   # ==== Examples
-  #  Mode.new                     #=> <Mode @state=:production, @valid_states=[:development, :test, :production]>
-  #  Mode.new(:test)              #=> <Mode @state=:test, @valid_states=[:development, :test, :production]>
-  #  Mode.new(:dev, [:abc, :dev]) #=> <Mode @state=:dev, @valid_states=[:abc, :dev]>
+  #  AppMode.new                     #=> <AppMode @state=:production, @valid_states=[:development, :test, :production]>
+  #  AppMode.new(:test)              #=> <AppMode @state=:test, @valid_states=[:development, :test, :production]>
+  #  AppMode.new(:dev, [:abc, :dev]) #=> <AppMode @state=:dev, @valid_states=[:abc, :dev]>
   def initialize(
       state        = :dynamic,
       valid_states = [:development, :test, :rake, :production])
