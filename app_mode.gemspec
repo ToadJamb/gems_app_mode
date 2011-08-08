@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'app_mode'
-  s.version = '0.0.1'
+  s.version = '0.0.2'
 
   s.summary = 'Application state management.'
   s.description = 'AppMode provides state management for ' +
