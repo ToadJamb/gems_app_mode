@@ -1,5 +1,5 @@
 source "http://rubygems.org"
 
 group :rake do
-  gem 'rake', '~> 0.8.7'
+  gem 'rake_tasks', '~> 0.0.1'
 end

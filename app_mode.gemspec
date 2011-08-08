@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.files = Dir['lib/**/*.rb', '*']
   s.test_files = Dir['test/**/*.rb']
 
-  s.add_development_dependency 'rake', '~> 0.8.7'
+  s.add_development_dependency 'rake_tasks', '~> 0.0.1'
 
   s.has_rdoc = true
 end

@@ -1,16 +1,2 @@
-root_path = File.expand_path(File.dirname(__FILE__))
 require 'bundler'
 Bundler.require :rake
-require 'rake/testtask'
-require 'rake/rdoctask'
-require 'rake/clean'
-require 'tempfile'
-
-task :default => [:tests]
-
-# Include any ruby files in the tasks folder.
-task_files = Dir[File.join(root_path, 'tasks', '*.rb')]
-
-task_files.each do |rake_file|
-  require rake_file
-end
