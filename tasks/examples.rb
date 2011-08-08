@@ -1,14 +1,14 @@
 desc 'Generate examples.'
 task :examples do |task|
-  require_relative 'lib/mode'
+  require "./lib/#{File.basename(Dir.getwd)}"
 
   commands = [
     [
-      'Mode.new',
-      'Mode.new(:test)',
-      'Mode.new(:dev, [:abc, :dev])',
+      'AppMode.new',
+      'AppMode.new(:test)',
+      'AppMode.new(:dev, [:abc, :dev])',
     ], [
-    'o=Mode.new;o.state',
+    'o=AppMode.new;o.state',
     ]
   ]
 
