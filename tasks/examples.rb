@@ -4,11 +4,11 @@ task :examples do |task|
 
   commands = [
     [
-      'AppMode.new',
-      'AppMode.new(:test)',
-      'AppMode.new(:dev, [:abc, :dev])',
+      'StateManager.new',
+      'StateManager.new(:test)',
+      'StateManager.new(:dev, [:abc, :dev])',
     ], [
-    'o=AppMode.new;o.state',
+    'o=StateManager.new;o.state',
     ]
   ]
 

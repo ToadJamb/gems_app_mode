@@ -36,7 +36,7 @@
 # This module is provided to be used as an include in any necessary class.
 #
 # This serves as a bridge between test code and application code.
-module AppModeSupport
+module StateManagerSupport
   # These are things that will be used throughout testing in multiple locations.
   ITEMS = {
     :states => {

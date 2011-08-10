@@ -11,7 +11,7 @@ the state that a class, module, library, script, or application is running in.
 
 2. Require the gem in your gemfile:
 
-    gem 'app_mode', '~> 0.0.1'
+    gem 'app_mode', '~> 1.0.0'
 
 3. Require the gem wherever you need state management:
 
@@ -30,7 +30,7 @@ There are two ways to use this gem.
 
    See notes below on the :dynamic state, which is the default.
 
-    my_mode = AppMode.new
+    my_mode = StateManager.new
 
     my_mode.state = :test
 
@@ -44,12 +44,12 @@ There are two ways to use this gem.
 
    Or specify the state you want to use when initializing the object:
 
-    my_mode = AppMode.new(:development)
+    my_mode = StateManager.new(:development)
 
    If you would like to use states other than those provided, you are free
    to do so:
 
-    my_mode = AppMode.new(:blue, [:red, :yellow, :green, :blue])
+    my_mode = StateManager.new(:blue, [:red, :yellow, :green, :blue])
 
     my_mode.state = :yellow
 
@@ -59,13 +59,11 @@ There are two ways to use this gem.
 
    The :dynamic state is still valid with custom states:
 
-    my_mode = AppMode.new(:dynamic, [:red, :yellow, :green, :blue])
+    my_mode = StateManager.new(:dynamic, [:red, :yellow, :green, :blue])
 
 2. Use the class methods:
    This method is really only recommended for the end application. The initial
    state will be set dynamically, so there is nothing to do except use it.
-   Only the default states (see "A Word on States" below) are available
-   using this method.
 
     if AppMode.state == :development
       # Development code.
@@ -79,21 +77,27 @@ There are two ways to use this gem.
 
 == Usage in libraries/gems
 
+Following these guidelines consumers of your library or gem will still have
+access to the state of your gem and can control it, if need be. Otherwise,
+changing AppMode.state to :development could put every gem that uses AppMode
+into "development" mode, which is probably not what you want to have happen
+to your gem or anyone else's.
+
 The following method is recommended for use in libraries or gems:
 
   module MyModule
-    MyModuleMode = AppMode.new
+    MyModuleMode = StateManager.new
   end
 
 or
 
   class MyClass
-    MyClassMode = AppMode.new
+    MyClassMode = StateManager.new
   end
 
 == A Word on States
 
-* AppMode assumes the following default "states":
+* StateManager assumes the following default "states":
 
   :development
 
@@ -103,20 +107,20 @@ or
 
   :production
 
-* There is a fifth state (:dynamic), which will tell AppMode to determine
+* There is a fifth state (:dynamic), which will tell StateManager to determine
   the state by examining the stack trace. It is only available when initializing
-  a new AppMode object and assumes that the first state is 'development', the
-  second is 'test', the third is 'rake', and the last one (not the fourth) is
-  'production'. If less than four states are specified, the last one will be
+  a new StateManager object and assumes that the first state is 'development',
+  the second is 'test', the third is 'rake', and the last one (not the fourth)
+  is 'production'. If less than four states are specified, the last one will be
   used for multiple states. For example, if the states specified are
   [:orange, :apple, :grape], :grape will be used for both rake and production.
 
-* Only states in the list when the AppMode object were created are valid.
+* Only states in the list when the StateManager object were created are valid.
   For example, the following code will generate errors:
 
-   my_mode = AppMode.new(:blue, [:red, :green]) #=> RuntimeError: Invalid environment setting: 'blue'.
+   my_mode = StateManager.new(:blue, [:red, :green]) #=> RuntimeError: Invalid environment setting: 'blue'.
 
-   my_mode = AppMode.new(:dynamic, [:red, :green])
+   my_mode = StateManager.new(:dynamic, [:red, :green])
 
    my_mode.state = :development #=> RuntimeError: Invalid environment setting: 'development'.
 
@@ -128,7 +132,7 @@ or
 
   Check for inclusion in the array of valid states:
 
-   my_mode = AppMode.new(:red, [:red, :green])
+   my_mode = StateManager.new(:red, [:red, :green])
 
    if my_mode.valid_states.include?(:purple) && my_mode.purple
      # Purple code.
@@ -136,11 +140,23 @@ or
 
   Use equivalency:
 
-   my_mode = AppMode.new(:red, [:red, :green])
+   my_mode = StateManager.new(:red, [:red, :green])
 
    if my_mode.state == :purple
      # Purple code.
    end
+
+* If you are compelled to change the states for the global AppMode class,
+  that may be done by using the setup method, which accepts the same
+  arguments as StateManager.new. Passing in a state of :dynamic will allow it
+  to set the state as it is intended.
+
+* Although this document explains how to do so,
+  it is best to leave AppMode (its valid states and its state) unaltered,
+  as such changes are global and could have unexpected results when other code
+  (such as gems) may be relying on the default settings, even though
+  it is recommended that they have their own object that should
+  be made available to your code.
 
 == Additional Documentation
 
