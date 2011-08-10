@@ -38,6 +38,13 @@ class AppMode < StateManager
   # Tracks a global mode setting.
   @@mode = nil
 
+  # Constructor.
+  def initialize(*args)
+    # AppMode.new should not be called.
+    raise NotImplementedError, "#{self.class.name}.new is not implemented. " +
+      "You probably want #{self.class.superclass.name}.new."
+  end
+
   class << self
     # Override the send method.
     #
@@ -52,7 +59,7 @@ class AppMode < StateManager
 
     # Initializes the global mode setting.
     def setup(*args)
-      @@mode = self.new(*args)
+      @@mode = self.superclass.new(*args)
     end
 
     ########################################################################

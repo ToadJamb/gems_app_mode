@@ -102,6 +102,10 @@ class AppModeTest < Test::Unit::TestCase
     assert_raise(ArgumentError) { @class.send(:test) }
   end
 
+  def test_initialize_object_should_fail
+    assert_raise(NotImplementedError) { @class.new }
+  end
+
   ############################################################################
   private
   ############################################################################
