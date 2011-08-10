@@ -36,7 +36,9 @@ class AppModeTest < Test::Unit::TestCase
   include AppModeSupport
 
   def setup
+    @class = AppMode
     @class.setup
+    @obj = nil
     super
   end
 
@@ -309,5 +311,25 @@ class AppModeTest < Test::Unit::TestCase
 
   def create(*args)
     @obj = @class.new(*args)
+  end
+
+  ############################################################################
+  # Assertions - stolen from test_internals.
+  ############################################################################
+
+  # Asserts that a value is equal to false.
+  # ==== Input
+  # [value : Any] The value to check for equality against false.
+  # [message : String : nil] The message to display if the value is not false.
+  def assert_false(value, message = nil)
+    assert_equal false, value, message
+  end
+
+  # Asserts that a value is equal to true.
+  # ==== Input
+  # [value : Any] The value to check for equality against true.
+  # [message : String : nil] The message to display if the value is not true.
+  def assert_true(value, message = nil)
+    assert_equal true, value, message
   end
 end
