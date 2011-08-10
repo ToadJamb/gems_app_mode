@@ -45,6 +45,11 @@ module AppModeSupport
       :test    => [:test_dev, :test_test, :test_rake, :test_prod],
       :rake    => [:rake_dev, :rake_test, :rake_rake, :rake_prod],
       :prod    => [:prod_dev, :prod_test, :prod_rake, :prod_prod],
+
+      :test_test_class  => [:test_test_class_dev, :test_ttc, :rake, :prod],
+      :test_class_test  => [:test_class_test_dev, :test_tct, :rake, :prod],
+      :tests_test_class => [:tests_test_class_dev, :test_stc, :rake, :prod],
+      :tests_class_test => [:tests_class_test_dev, :test_sct, :rake, :prod],
     }, # :states
 
     :method_list => {

@@ -125,16 +125,16 @@ class AppMode
   def dynamic_state
     call = origin
     return @valid_states[0] unless call.sub(/^\.\//, '').match(/\//)
-    return @valid_states[1] if call.match(/rake_test_loader\.rb/)
-    return @valid_states[2] if call.match(%r[/bin/rake])
-    return @valid_states.last
-  end
 
-  # Returns the current working directory.
-  # ==== Notes
-  # This method is overridden during tests.
-  def getwd
-    Dir.getwd
+    case call
+      when /rake_test_loader\.rb/,
+          %r[/tests?/test_\w+?.rb], %r[/tests?/\w+?_test.rb]
+        return @valid_states[1]
+      when %r[/bin/rake]
+        return @valid_states[2]
+    end
+
+    return @valid_states.last
   end
 
   # Returns the first call in the stack.

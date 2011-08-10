@@ -134,6 +134,30 @@ class AppModeTest < Test::Unit::TestCase
 
     assert_raise(NoMethodError) { @obj.dynamic }
     assert_raise(NoMethodError) { @obj.test }
+
+    assert_nothing_raised { create :dynamic, states(:test_test_class) }
+    assert_false @obj.test_test_class_dev
+    assert_true @obj.test_ttc
+    assert_false @obj.rake
+    assert_false @obj.prod
+
+    assert_nothing_raised { create :dynamic, states(:tests_test_class) }
+    assert_false @obj.tests_test_class_dev
+    assert_true @obj.test_stc
+    assert_false @obj.rake
+    assert_false @obj.prod
+
+    assert_nothing_raised { create :dynamic, states(:test_class_test) }
+    assert_false @obj.test_class_test_dev
+    assert_true @obj.test_tct
+    assert_false @obj.rake
+    assert_false @obj.prod
+
+    assert_nothing_raised { create :dynamic, states(:tests_class_test) }
+    assert_false @obj.tests_class_test_dev
+    assert_true @obj.test_sct
+    assert_false @obj.rake
+    assert_false @obj.prod
   end
 
   def test_dynamic_state_with_less_than_ideal_number_of_states

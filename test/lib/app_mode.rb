@@ -37,18 +37,16 @@ class AppMode
   private
   ############################################################################
 
-  def getwd
-    if @valid_states.include?(:dynamic_dev)
-      return '/root/path/development'
-    else
-      return '/root/path/production'
-    end
-  end
-
   def origin
     case @valid_states[0]
       when /^dev_/
         "./file_name.rb:00:in `<main>'"
+      when /^test_test_class/, /^test_class_test/,
+          /^tests_test_class/, /^tests_class_test/
+        path = @valid_states[0].to_s
+        folder = path.match(/^(\w+?)_/)[1].to_s
+        file = path.match(/^\w+?_(\w+?_\w+?)_/)[1].to_s
+        "./#{folder}/#{file}.rb:33:in `<main>'"
       when /^test_/
         "/root/ruby/gems/ruby-9.8.7-p123/gems/rake-6.5.4/lib/rake/" +
         "rake_test_loader.rb:5:in `<main>'"
