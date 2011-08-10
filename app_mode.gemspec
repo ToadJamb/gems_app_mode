@@ -1,10 +1,14 @@
 Gem::Specification.new do |s|
   s.name = 'app_mode'
-  s.version = '1.0.0'
+  s.version = '1.0.1'
 
   s.summary = 'State management for objects and applications.'
-  s.description = 'AppMode provides state management for ' +
-    'modules, classes, libraries, and applications.'
+  s.description = %Q{
+AppMode provides state management for modules, classes, libraries,
+and applications. It may even be used to create and manage new states.
+The possibilities are endless. This is your chance to create
+a :solid state, :contemplative state, or even a :free state.
+}.strip
 
   s.author   = 'Travis Herrick'
   s.email    = 'tthetoad@gmail.com'
