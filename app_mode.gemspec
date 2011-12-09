@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'app_mode'
-  s.version = '1.0.1'
+  s.version = '1.0.2'
 
   s.summary = 'State management for objects and applications.'
   s.description = %Q{
@@ -22,7 +22,7 @@ a :solid state, :contemplative state, or even a :free state.
   s.files = Dir['lib/**/*.rb', '*']
   s.test_files = Dir['test/**/*.rb']
 
-  s.add_development_dependency 'rake_tasks', '~> 0.0.1'
+  s.add_development_dependency 'rake_tasks', '~> 2.0.1'
 
   s.has_rdoc = true
 end

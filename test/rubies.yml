@@ -1,0 +1,10 @@
+- ruby: 1.9.2-p0
+  gemset: app_mode_test
+- ruby: 1.9.2-p136
+  gemset: app_mode_test
+- ruby: 1.9.2-p180
+  gemset: app_mode_test
+- ruby: 1.9.2-p290
+  gemset: app_mode_test
+- ruby: 1.9.3-p0
+  gemset: app_mode_test
