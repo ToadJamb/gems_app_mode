@@ -1,12 +1,12 @@
 PATH
   remote: .
   specs:
-    app_mode (1.0.2)
+    app_mode (1.0.2.dev)
 
 GEM
   remote: http://rubygems.org/
   specs:
-    rake_tasks (2.0.1)
+    rake_tasks (2.0.2)
 
 PLATFORMS
   ruby
@@ -14,4 +14,4 @@ PLATFORMS
 
 DEPENDENCIES
   app_mode!
-  rake_tasks (~> 2.0.1)
+  rake_tasks (~> 2.0.2)
