@@ -22,7 +22,7 @@ a :solid state, :contemplative state, or even a :free state.
   s.files = Dir['lib/**/*.rb', '*']
   s.test_files = Dir['test/**/*.rb']
 
-  s.add_development_dependency 'rake_tasks', '~> 2.0.2'
+  s.add_development_dependency 'rake_tasks', '~> 2.0.3'
 
   s.has_rdoc = true
 end

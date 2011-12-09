@@ -6,7 +6,7 @@ PATH
 GEM
   remote: http://rubygems.org/
   specs:
-    rake_tasks (2.0.2)
+    rake_tasks (2.0.3)
 
 PLATFORMS
   ruby
@@ -14,4 +14,4 @@ PLATFORMS
 
 DEPENDENCIES
   app_mode!
-  rake_tasks (~> 2.0.2)
+  rake_tasks (~> 2.0.3)
