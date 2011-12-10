@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    app_mode (1.0.2.dev)
+    app_mode (1.0.2)
 
 GEM
   remote: http://rubygems.org/

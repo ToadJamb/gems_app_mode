@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'app_mode'
-  s.version = '1.0.2.dev'
+  s.version = '1.0.2'
 
   s.summary = 'State management for objects and applications.'
   s.description = %Q{
