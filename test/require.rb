@@ -1,7 +1,7 @@
 require 'bundler'
-Bundler.require :test
-
 require 'test/unit'
+
+Bundler.require :test
 
 require_relative '../lib/app_mode'
 
